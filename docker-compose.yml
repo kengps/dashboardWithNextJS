@@ -1,0 +1,89 @@
+version: '3'
+
+services:
+    my-app:
+        build:
+            context: . # โฟลเดอร์ root ของโปรเจกต์
+            dockerfile: Dockerfile
+        command: sh -c "npm install && npm run dev" # รันโหมด dev เพื่อให้ hot reload ทำงาน
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+            - WATCHPACK_POLLING=true
+            - MY_PORT=3000
+            - NODE_ENV=development
+        ports:
+            - '3000:3000' # เปิดพอร์ต 3000
+        volumes:
+            - .:/app # แมปโฟลเดอร์ปัจจุบันทั้งหมดไปยัง /app ในคอนเทนเนอร์
+            - /app/node_modules # ป้องกันการแมป node_modules ทับกัน
+        networks:
+            - mynetwork
+
+    mongo:
+        image: mongo
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=keng
+            - MONGO_INITDB_ROOT_PASSWORD=mypassword
+        volumes:
+            - mongo-db:/data/db
+        networks:
+            - mynetwork
+
+    redis:
+        image: redis
+        networks:
+            - mynetwork
+
+volumes:
+    mongo-db:
+
+networks:
+    mynetwork:
+#     version: '3'
+
+# services:
+#     app:
+#         build:
+#             context: . # โฟลเดอร์ root ของโปรเจกต์
+#             dockerfile: Dockerfile
+#         # command: "npm run dev"  # รันโหมด dev เพื่อให้ hot reload ทำงาน
+#         restart: unless-stopped
+#         command: npm run dev
+#         environment:
+#             - CHOKIDAR_USEPOLLING=true
+#         develop:
+#             watch:
+#                 - action: sync
+#                   path: .:/app
+#                   target: /src/app
+#                   ignore:
+#                       - node_modules/
+#         ports:
+#             - '3000:3000' # เปิดพอร์ต 3000
+#         volumes:
+#             - .:/app # แมปโฟลเดอร์ปัจจุบันทั้งหมดไปยัง /app ในคอนเทนเนอร์
+#             - /app/node_modules # ป้องกันการแมป node_modules ทับกัน
+#         networks:
+#             - mynetwork
+
+#     mongo:
+#         image: mongo
+#         environment:
+#             - MONGO_INITDB_ROOT_USERNAME=keng
+#             - MONGO_INITDB_ROOT_PASSWORD=mypassword
+#         volumes:
+#             - mongo-db:/data/db
+#         networks:
+#             - mynetwork
+
+#     redis:
+#         image: redis
+#         networks:
+#             - mynetwork
+
+# volumes:
+#     mongo-db:
+
+# networks:
+#     mynetwork:
+
