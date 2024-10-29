@@ -10,8 +10,11 @@ import { NextResponse } from 'next/server';
 
 
 const loggedIn = async (request) => {
+    console.log('====================================');
+    console.log('ยังมีการทำงานที่นี้มั้ย');
+    console.log('====================================');
     const req = await request.json(); // รับค่า JSON
-    console.log("Received Request:", req); // แสดงค่าที่ได้รับ
+  
 
     // ตรวจสอบค่าที่ได้รับ
     if (!req || !req.username || !req.password) {
@@ -62,6 +65,8 @@ const loggedIn = async (request) => {
                 id: user._id,
             },
         };
+        console.log(`⩇⩇:⩇⩇🚨  file: route.js:65  userPayLoad :`, userPayLoad);
+
        
 
 

@@ -6,7 +6,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 
 const ClientDashboard = () => {
     const { data: session } = useSession();
-    console.log(`⩇⩇:⩇⩇🚨  file: Form.jsx:9  session :`, session);
+    // console.log(`⩇⩇:⩇⩇🚨  file: Form.jsx:9  session :`, session);
 
     if (!session) {
         return (
@@ -20,7 +20,7 @@ const ClientDashboard = () => {
 
     return (
         <div>
-            <h1>ยินดีต้อนรับ {session.user?.username}</h1>
+            <h1>ยินดีต้อนรับ {session?.user?.username}</h1>
             <button onClick={() => signOut({ callbackUrl: '/auth/login' })}>ออกจากระบบ</button>
         </div>
     );

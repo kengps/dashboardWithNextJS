@@ -6,7 +6,7 @@ import adminUser from '@/models/adminModel';
 import memberUser from '@/models/memberModel';
 import { connectDatabases } from '@/utils/database/mongoose/connectDB';
 
-const authOptions = {
+export const authOptions = {
     providers: [
         CredentialsProvider({
             name: 'credentials',
@@ -22,21 +22,34 @@ const authOptions = {
                     await adminUser.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } }) ||
                     await memberUser.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
 
-                if (!user || !user.enabled) return null;
+                //if (!user || !user.enabled) return null;
+                if (!user || !user.enabled) {
+                    throw new Error("User not found or not enabled");
+                }
 
                 const isPasswordMatch = await bcrypt.compare(password, user.password);
-                if (!isPasswordMatch) return null;
+
+                if (!isPasswordMatch) {
+                    throw new Error("Incorrect Password");
+                };
+                const profile = {
+                    id: user._id,
+                    username: user.username,
+                    role: user.role,
+                }
 
                 return {
                     id: user._id,
                     username: user.username,
                     role: user.role,
+                    age: 23
                 };
             }
         })
     ],
     session: {
         strategy: "jwt",
+        maxAge: 3 * 60 * 60, // 3 hours in seconds
     },
     callbacks: {
         async jwt({ token, user }) {
@@ -44,6 +57,7 @@ const authOptions = {
                 token.id = user.id;
                 token.username = user.username;
                 token.role = user.role;
+                token.age = user.age;
             }
             return token;
         },
@@ -52,6 +66,7 @@ const authOptions = {
                 id: token.id,
                 username: token.username,
                 role: token.role,
+                age: token.age,
             };
             return session;
         },

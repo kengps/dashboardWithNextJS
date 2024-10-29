@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import FormLogin from '@/components/forms/FormLogin'
 import { loginSchema } from '@/utils/zodSchema/login'
@@ -9,14 +9,52 @@ import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { persistMiddleware, storeAuth } from '@/store'
-import { toast } from 'react-toastify';
-import { signIn } from 'next-auth/react'
+import { toast, Zoom } from 'react-toastify';
+import { signIn, useSession } from 'next-auth/react'
+
 
 const LoginPage = () => {
+    const searchParams = useSearchParams()
+    const error = searchParams.get("error")
+    const authRequired = searchParams.get("authRequired") // เปลี่ยนมาใช้ authRequired
+    const router = useRouter();
+    const { data: session, status } = useSession();
+    console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:22  session :`, session);
+
+    console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:22  status :`, status);
 
 
+    useEffect(() => {
 
+        if (authRequired) {
 
+            toast.error('กรุณาล็อคอิน', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Zoom,
+            });
+        }
+
+    }, [authRequired])
+
+    // Redirect based on session role
+    useEffect(() => {
+        if (session) {
+            console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:49  session :`, session);
+
+            if (session.user.role === 'admin') {
+                router.push('/dashboard');
+            } else {
+                router.push('/member/homepage'); // เปลี่ยนเส้นทางตาม role
+            }
+        }
+    }, [session, router]);
 
     //1 login โดยการใช้ useForm
     const { register, handleSubmit, formState: { errors }, } = useForm({
@@ -24,8 +62,6 @@ const LoginPage = () => {
     });
 
     const [loadings, setLoadings] = useState(false)
-    const redirect = useRouter()
-
 
     //zustand
     const { Login } = persistMiddleware();
@@ -33,46 +69,26 @@ const LoginPage = () => {
     //2 ทำการตรวจสอบ Role
     const checkLevelRole = async (data) => {
         if (data.user.role === 'user') {
-            redirect.push('/member/homepage')
+            router.push('/member/homepage')
         } else {
-            redirect.push('/dashboard')
+
+            if (session) {
+                if (session.user.role === 'admin') {
+                    router.push('/dashboard');
+                } else {
+                    router.push('/dashboard/setting'); // เปลี่ยนเส้นทางตาม role
+                }
+            }
         }
     }
 
     const onSubmit = async (value) => {
-        console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:42  value :`, value);
+        console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:74  value :`, value);
 
 
         setLoadings(true)
-
-
-
-
-
         try {
-            // const result = await signIn('cre', {
-            //     username: value.username,
-            //     password: value.password,
-            //     redirect: false
-            // });
-            // console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:52  result :`, result);
 
-            // if (result?.error) {
-            //     // หากล็อกอินไม่สำเร็จ แสดงข้อความแสดงข้อผิดพลาด
-            //     toast(`🦄 ${result.error}`, {
-            //         position: "top-right",
-            //         autoClose: 5000,
-            //         hideProgressBar: false,
-            //         closeOnClick: true,
-            //         pauseOnHover: true,
-            //         draggable: true,
-            //         progress: undefined,
-            //         theme: "light",
-            //     });
-            // } else {
-            //     // หากล็อกอินสำเร็จ เปลี่ยนเส้นทางไปยังหน้าแดชบอร์ด
-            //     redirect('/dashboard');
-            // }
 
             const result = await signIn('credentials', {
                 username: value.username,
@@ -81,9 +97,16 @@ const LoginPage = () => {
             })
 
             if (result.error) {
-                console.error(result.error)
+                toast.error(result.error);
             } else {
-                redirect.push('/dashboard')
+
+                // if (session) {
+                //     if (session.user.role === 'admin') {
+                //         router.push('/dashboard');
+                //     } else {
+                //         router.push('/dashboard/setting'); // เปลี่ยนเส้นทางตาม role
+                //     }
+                // }
             }
 
 
@@ -103,6 +126,7 @@ const LoginPage = () => {
             setLoadings(false);
         }
     }
+
 
     return (
 

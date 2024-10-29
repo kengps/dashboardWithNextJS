@@ -1,8 +1,9 @@
-import React from 'react';
+'use client'
+import React, { useState } from 'react';
 import { UploadOutlined, UserOutlined, VideoCameraOutlined, MailOutlined } from '@ant-design/icons';
 import { Avatar, Space, Layout, Menu, Grid, Typography } from 'antd';
 import { Toolbar } from '@mui/material';
-
+import { useSession } from 'next-auth/react';
 
 const { Sider } = Layout;
 const { Title, Text } = Typography;
@@ -16,6 +17,10 @@ const AppSidebar = ({ collapsed, handleMenuClick, menuItems, onOpenChange, openK
   // let username = store ? store.state.user.userPayLoad.user.username : ""
   // let role = store ? store.state.user.userPayLoad.user.role : ""
 
+
+  const { data: session } = useSession()
+
+ 
   const username = 'keng@admin'
   const role = 'Develop'
 
@@ -35,8 +40,8 @@ const AppSidebar = ({ collapsed, handleMenuClick, menuItems, onOpenChange, openK
           />
           {!collapsed && (
             <Space direction="vertical" size={4} style={{ textAlign: 'left' }}>
-              <Text style={{ fontSize: '12px' }}>ชื่อ: {username.split('@')[0]}</Text>
-              <Text style={{ fontSize: '12px' }}>ระดับ: {role}</Text>
+              <Text style={{ fontSize: '12px' }}>ชื่อ: {session?.user?.username .split('@')[0]}</Text>
+              <Text style={{ fontSize: '12px' }}>ระดับ: {session?.user?.role}</Text>
             </Space>
           )}
         </Space>

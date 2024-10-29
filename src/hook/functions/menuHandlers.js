@@ -1,8 +1,11 @@
+
 // src/utils/menuHandlers.js
+import { signOut } from 'next-auth/react';
+
 import sweetalert from 'sweetalert2';
 
 export const handleSideMenuClick = async (e, menuItems, router) => {
-    console.log('Menu item clicked');
+
 
     try {
         const key = e.key;
@@ -15,6 +18,9 @@ export const handleSideMenuClick = async (e, menuItems, router) => {
             });
             if (confirm.isConfirmed) {
                 // Logout logic here
+                signOut({ callbackUrl: '/auth/login' })
+                localStorage.clear();
+                // await fetch(`${process.env.NEXTAUTH_URL}api/auth/logout`)
             }
         }
 
