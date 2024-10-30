@@ -1,4 +1,4 @@
-const roleAccessMap = require(".");
+const roleAccessMap = require("./roleAccess");
 
 //import { roleAccessMap } from "./index";
 

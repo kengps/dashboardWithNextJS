@@ -19,9 +19,7 @@ const LoginPage = () => {
     const authRequired = searchParams.get("authRequired") // เปลี่ยนมาใช้ authRequired
     const router = useRouter();
     const { data: session, status } = useSession();
-    console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:22  session :`, session);
 
-    console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:22  status :`, status);
 
 
     useEffect(() => {
@@ -43,18 +41,18 @@ const LoginPage = () => {
 
     }, [authRequired])
 
-    // Redirect based on session role
-    useEffect(() => {
-        if (session) {
-            console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:49  session :`, session);
+    //* Redirect based on session role ถ้ามี session แล้ว จะตรวจสอบ role แล้วไปยังหน้านั้นๆ (วิธีนี้จะมีแค่นี้ ไม่ต้องเพิ่ม middleware.js)
+    // useEffect(() => {
+    //     if (session) {
+    //         console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:49  session :`, session);
 
-            if (session.user.role === 'admin') {
-                router.push('/dashboard');
-            } else {
-                router.push('/member/homepage'); // เปลี่ยนเส้นทางตาม role
-            }
-        }
-    }, [session, router]);
+    //         if (session.user.role === 'admin') {
+    //             router.push('/dashboard');
+    //         } else {
+    //             router.push('/member/homepage'); // เปลี่ยนเส้นทางตาม role
+    //         }
+    //     }
+    // }, [session, router]);
 
     //1 login โดยการใช้ useForm
     const { register, handleSubmit, formState: { errors }, } = useForm({

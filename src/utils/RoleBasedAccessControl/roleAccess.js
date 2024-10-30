@@ -1,7 +1,9 @@
 const roleAccessMap = {
     "admin": [
         "/",
+        "/auth/login",
         "/dashboard",
+        "/dashboard/setting",
         // "/companies/[id]",
         // "/tickets",
         // "/tickets/[id]",

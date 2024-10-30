@@ -42,7 +42,7 @@ const loggedIn = async (request) => {
             user = await memberUser.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
 
             if (!user) {
-                return NextResponse.json({ message: "User or Admin is not found!" }, { status: 404 });
+                return NextResponse.json({ message: "User or Admin is not found!" }, { status: 401 });
             }
         }
 

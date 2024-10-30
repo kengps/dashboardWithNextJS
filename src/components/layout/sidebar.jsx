@@ -35,13 +35,12 @@ const AppSidebar = ({ collapsed, handleMenuClick, menuItems, onOpenChange, openK
             className='profileAvatar'
             shape="square"
             size="large"
-
             icon={<UserOutlined />}
           />
           {!collapsed && (
             <Space direction="vertical" size={4} style={{ textAlign: 'left' }}>
-              <Text style={{ fontSize: '12px' }}>ชื่อ: {session?.user?.username .split('@')[0]}</Text>
-              <Text style={{ fontSize: '12px' }}>ระดับ: {session?.user?.role}</Text>
+              <Text style={{ fontSize: '12px' }}><b>ชื่อ : </b> {session?.user?.username.toUpperCase().split('@')[0]}</Text>
+              <Text style={{ fontSize: '12px' }}><b>ระดับ : </b>{session?.user?.role.toUpperCase()}</Text>
             </Space>
           )}
         </Space>
