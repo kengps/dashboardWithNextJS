@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const imageFormLogin = mongoose.Schema({
-    image: Buffer,
+    image: [Buffer],
     status: Boolean
 }, { timestamps: true })
 

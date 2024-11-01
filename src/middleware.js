@@ -22,11 +22,11 @@ export async function middleware(req) {
     }
 
     //*  Redirect based on session อีกวิธี โดยการตรวจสอบ pathname และ token ถ้ามีอยู่แล้วก็ให้ไปยัง path origin(ถ้ามีเงื่อนไขให้ไปทำที่ app/page.js)
-    if(pathname === '/auth/login') {
-       if(token) {
-        return NextResponse.redirect(`${origin}`);
-       }
-    }
+    // if(pathname === '/auth/login') {
+    //    if(token) {
+    //     return NextResponse.redirect(`${origin}`);
+    //    }
+    // }
 
      // ตรวจสอบบทบาทของผู้ใช้
     const role = token.role;
@@ -44,7 +44,10 @@ export async function middleware(req) {
 }
 
 export const config = {
-    matcher: ['/about/:path*', '/dashboard/:path*' ,'/auth/:path*'],
+    matcher: ['/about/:path*', '/dashboard/:path*', 
+        // '/api/admins/:path*' 
+        // ,"/auth/register"
+    ],
 };
 
 

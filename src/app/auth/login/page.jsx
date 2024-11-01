@@ -25,7 +25,6 @@ const LoginPage = () => {
     useEffect(() => {
 
         if (authRequired) {
-
             toast.error('กรุณาล็อคอิน', {
                 position: "top-center",
                 autoClose: 3000,
@@ -42,17 +41,11 @@ const LoginPage = () => {
     }, [authRequired])
 
     //* Redirect based on session role ถ้ามี session แล้ว จะตรวจสอบ role แล้วไปยังหน้านั้นๆ (วิธีนี้จะมีแค่นี้ ไม่ต้องเพิ่ม middleware.js)
-    // useEffect(() => {
-    //     if (session) {
-    //         console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:49  session :`, session);
-
-    //         if (session.user.role === 'admin') {
-    //             router.push('/dashboard');
-    //         } else {
-    //             router.push('/member/homepage'); // เปลี่ยนเส้นทางตาม role
-    //         }
-    //     }
-    // }, [session, router]);
+    useEffect(() => {
+        if (session) {
+            router.push('/')
+        }
+    }, [session, router]);
 
     //1 login โดยการใช้ useForm
     const { register, handleSubmit, formState: { errors }, } = useForm({
@@ -98,6 +91,7 @@ const LoginPage = () => {
                 toast.error(result.error);
             } else {
 
+                router.push('/')
                 // if (session) {
                 //     if (session.user.role === 'admin') {
                 //         router.push('/dashboard');
