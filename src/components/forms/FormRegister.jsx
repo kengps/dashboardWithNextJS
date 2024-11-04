@@ -1,15 +1,36 @@
-import React from 'react';
-import { Button, Card, Checkbox, Form, Input } from 'antd';
+import React, { useState } from 'react';
+import { Button, Card, Form, Input } from 'antd';
 import Paper from '@mui/material/Paper';
-import { Box, TextField, InputAdornment } from '@mui/material';
+import { Box, TextField, InputAdornment, Checkbox, FormControl, FormGroup, FormControlLabel, FormLabel } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import IconButton from '@mui/material/IconButton';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import MenuItem from '@mui/material/MenuItem';
-const FormRegister = ({ onFinishFailed, onFinish, handleSubmit, errors, register, passwordsMatch, currencies }) => {
+import { Controller } from 'react-hook-form';
+const FormRegister = ({ onFinishFailed, onFinish, handleSubmit, errors, register, passwordsMatch, currencies, data, role, control }) => {
 
+
+
+    // const [state, setState] = React.useState({
+    //     Create: false,
+    //     Read: false,
+    //     Update: false,
+    //     Delete: false,
+    // });
+
+
+    // const handleChange = (event) => {
+    //     setState({
+    //         ...state,
+    //         [event.target.name]: event.target.checked,
+    //     });
+    // };
+    // console.log(`⩇⩇:⩇⩇🚨  file: FormRegister.jsx:20  state :`, state);
+
+    // const { Create, Read, Update, Delete } = state;
+    // const error = [Create, Read, Update, Delete].filter((v) => v).length !== 2;
 
 
 
@@ -70,25 +91,6 @@ const FormRegister = ({ onFinishFailed, onFinish, handleSubmit, errors, register
 
                 />
                 <TextField
-                    id="outlined-select-role"
-                    fullWidth
-                    select
-                    label="Select Role"
-                    defaultValue="admin"
-                    {...register('role', { required: 'Role is required' })}
-                    error={!!errors.role}
-                    helperText={errors.role?.message}
-
-                >
-                    {currencies.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-
-
-                <TextField
                     fullWidth
                     label="ConfirmPassword"
                     margin="normal"
@@ -118,10 +120,82 @@ const FormRegister = ({ onFinishFailed, onFinish, handleSubmit, errors, register
 
                 />
 
+                <TextField
+                    id="outlined-select-role"
+                    fullWidth
+                    select
+                    defaultValue=""
+                    label="Select Role"
+                    {...register('role', { required: 'Role is required' })}
+                    error={!!errors.role}
+                    helperText={errors.role?.message}
 
-                <Button type="primary" htmlType="submit" >
-                    Submit
-                </Button>
+                > <MenuItem value="">
+                        --Please choose--
+                    </MenuItem>
+                    {role.map((role, index) => (
+                        <MenuItem key={index} value={role}>
+                            {role}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <FormControl>
+
+                    {/* 
+                    //todo Controller ช่วยให้เราสามารถรวม Checkbox เข้ากับ React Hook Form โดยไม่ต้องจัดการ value และ onChange */}
+                    <Controller
+                        name="permissions.create"
+                        control={control}
+                        render={({ field }) => (
+                            <FormControlLabel
+                                control={<Checkbox {...field} />}
+                                label="Create"
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="permissions.read"
+                        control={control}
+                        render={({ field }) => (
+                            <FormControlLabel
+                                control={<Checkbox {...field} />}
+                                label="Read "
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="permissions.update"
+                        control={control}
+                        render={({ field }) => (
+                            <FormControlLabel
+                                control={<Checkbox {...field} />}
+                                label="Update "
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="permissions.delete"
+                        control={control}
+                        render={({ field }) => (
+                            <FormControlLabel
+                                control={<Checkbox {...field} />}
+                                label="Delete "
+                            />
+                        )}
+                    />
+                    {/* ถ้าต้องการใช้ register ให้แบบนี้ แล้วค่อยกำหนด style เอาเอง */}
+                    {/* <label>
+                    <input type="checkbox" {...register("permissions.update")} />
+                    Update
+                </label> */}
+
+
+
+                    <Button type="primary" htmlType="submit" >
+                        Submit
+                    </Button>
+
+                </FormControl>
 
 
             </Paper>
