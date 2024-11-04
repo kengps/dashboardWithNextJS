@@ -6,6 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+// import { useQuery } from 'react-query'
+
+import { useQuery } from "@tanstack/react-query";
+
 
 const RegisterPage = () => {
 
@@ -36,18 +40,58 @@ const RegisterPage = () => {
 
     ];
 
+/**
+ * The function fetchData fetches data from a specified URL and handles loading, error, and data
+ * retrieval states using React Query.
+ * @returns The code snippet provided is a React component that fetches data from a specified URL using
+ * the `fetchData` function. It then uses the `useQuery` hook to manage the data fetching process.
+ */
+    const fetchData = async ({ queryKey }) => {
+        const url = `http://localhost:3000/api/profiles`;
 
-    const postData = async (values) => {
-        await axios.post(`http://localhost:3000/api/profiles/${values.role}s`, values).then((res) => {
-            console.log('====================================');
-            console.log(res);
-            console.log('====================================');
-            alert(res)
-        }).catch((err) => {
-            console.log('err', err);
+        try {
+            const res = await fetch(url);
 
-        })
+            if (!res.ok) {
+                throw new Error(`Error: ${res.status} ${res.statusText}`);
+            }
+
+            return res.json();
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            throw error; // Propagate error for `useQuery` to catch
+        }
+    };
+
+
+    const { isLoading, isError, data, error, refetch } = useQuery({
+        queryKey: ['fetchData'],
+        queryFn: fetchData,
+    });
+
+    if (isLoading) {
+        return <span>Loading...</span>;
     }
+
+    if (isError) {
+        return <span>Error: {error.message}</span>;
+    }
+
+    console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:55  data :`, data);
+
+
+
+    // const postData = async (values) => {
+    //     await axios.post(`http://localhost:3000/api/profiles/${values.role}s`, values).then((res) => {
+    //         console.log('====================================');
+    //         console.log(res);
+    //         console.log('====================================');
+    //         alert(res)
+    //     }).catch((err) => {
+    //         console.log('err', err);
+
+    //     })
+    // }
 
 
 
@@ -57,7 +101,8 @@ const RegisterPage = () => {
 
             const { username, password, cfpassword, role } = values
 
-            const url = `http://localhost:3000/api/profiles/${role}s`;
+            // const url = `http://localhost:3000/api/profiles/${role}s`;
+            const url = `http://localhost:3000/api/profiles`;
 
 
             await axios.post(url, values).then((res) => {
