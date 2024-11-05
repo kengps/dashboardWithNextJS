@@ -42,7 +42,9 @@ export default function Page() {
     if (session) {
       console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:49  session :`, session);
 
-      if (session.user.role === 'admin') {
+      if (session.user.role === 'Admin') {
+        router.push('/dashboard');
+      } else if (session.user.role === 'Master') {
         router.push('/dashboard');
       } else {
         router.push('/member/homepage'); // เปลี่ยนเส้นทางตาม role

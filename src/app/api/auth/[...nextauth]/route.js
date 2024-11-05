@@ -5,6 +5,9 @@ import bcrypt from 'bcryptjs';
 import adminUser from '@/models/adminModel';
 import memberUser from '@/models/memberModel';
 import { connectDatabases } from '@/utils/database/mongoose/connectDB';
+import profiles from '@/models/profiles';
+import roles from '@/models/role';
+
 
 export const authOptions = {
     providers: [
@@ -18,12 +21,19 @@ export const authOptions = {
                 await connectDatabases();
                 const { username, password } = credentials;
 
-                let user =
-                    await adminUser.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } }) ||
-                    await memberUser.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
+                //const user = await profiles.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } })
+             
+                const user = await profiles.findOne({ username: username }).populate({ path: 'role', select: { _id: 0, name: 1 } })
+                console.log(`⩇⩇:⩇⩇🚨  file: route.js:27  user :`, user);
+
+              
+
+                // await adminUser.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } }) ||
+
+                // await memberUser.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
 
                 //if (!user || !user.enabled) return null;
-                if (!user || !user.enabled) {
+                if (!user || !user.isActive) {
                     throw new Error("User not found or not enabled");
                 }
 
@@ -35,17 +45,21 @@ export const authOptions = {
                 const profile = {
                     id: user._id,
                     username: user.username,
-                    role: user.role,
+                    role: user.name,
                 }
+                // console.log(`⩇⩇:⩇⩇🚨  file: route.js:44  profile :`, profile);
+
 
                 return {
                     id: user._id,
                     username: user.username,
-                    role: user.role,
-                    age: 23
+                    role: user.role.name,
+                    permissions: user.permissions
                 };
             }
         })
+
+
     ],
     session: {
         strategy: "jwt",
@@ -57,7 +71,7 @@ export const authOptions = {
                 token.id = user.id;
                 token.username = user.username;
                 token.role = user.role;
-                token.age = user.age;
+                token.permissions = user.permissions;
             }
             return token;
         },
@@ -66,7 +80,7 @@ export const authOptions = {
                 id: token.id,
                 username: token.username,
                 role: token.role,
-                age: token.age,
+                permissions: token.permissions,
             };
             return session;
         },

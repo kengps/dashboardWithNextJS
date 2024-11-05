@@ -15,13 +15,11 @@ const RegisterPage = () => {
 
     const [loadings, setLoadings] = useState(false)
 
-    const { register, handleSubmit, watch, control, formState: { errors }, } = useForm({
+    const { register, handleSubmit, watch, control, reset, formState: { errors }, } = useForm({
         resolver: zodResolver(registerSchema)
     })
     //  //1 login โดยการใช้ useForm
-    //  const { register, handleSubmit, formState: { errors }, } = useForm({
-    //     resolver: zodResolver(registerSchema)
-    // });
+
 
     const passwords = watch('password');
     const cfpassword = watch('cfpassword');
@@ -72,14 +70,12 @@ const RegisterPage = () => {
 
     const [result, setResult] = useState([])
     const { isLoading, isError, data, error, refetch } = useQuery({
-
-
         queryKey: ['fetchData'],
         queryFn: fetchData,
     });
 
 
-   
+
     //     // Check if data is an array before mapping
     // const roles = Array.isArray(data) ? data.map(profile => profile.role) : [];
 
@@ -95,7 +91,6 @@ const RegisterPage = () => {
 
     // ตรวจสอบว่า data.role มีอยู่และเป็นอาร์เรย์
     const roles = Array.isArray(data.role) ? data.role.map(role => ({
-
         _id: role._id,
         name: role.name,
         roleMember: role.roleMember,
@@ -110,7 +105,7 @@ const RegisterPage = () => {
     const names = Array.isArray(data.role) ? Object.values(data.role).map(role => role.name) : [];
 
     const names4 = Array.isArray(data) ? Object.values(data).map(role => role) : [];
-    
+
 
 
 
@@ -130,33 +125,32 @@ const RegisterPage = () => {
     }
 
 
-
     const onFinish = async (values) => {
-        console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:137  values :`, values);
+        setLoadings(true);
+        try {
+            const { username, password, cfpassword, role } = values
+            // const url = `http://localhost:3000/api/profiles/${role}s`;
+            const url = `http://localhost:3000/api/profiles`;
 
-        // try {
+            await axios.post(url, values).then((res) => {
+                if (res) {
+                    toast.success(res.data.message)
+                    reset();
+                    setLoadings(false);
 
+                }
+            }).catch((err) => {
+                console.log('err', err);
 
-        //     const { username, password, cfpassword, role } = values
-
-        //     // const url = `http://localhost:3000/api/profiles/${role}s`;
-        //     const url = `http://localhost:3000/api/profiles`;
-
-
-        //     await axios.post(url, values).then((res) => {
-        //         toast.success(res.data.message)
-        //     }).catch((err) => {
-        //         console.log('err', err);
-
-        //     })
-
-
-
-        // } catch (error) {
-        //     console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:45  error :`, error);
+            })
 
 
-        // }
+
+        } catch (error) {
+            console.log(`⩇⩇:⩇⩇🚨  file: page.jsx:45  error :`, error);
+
+
+        }
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);

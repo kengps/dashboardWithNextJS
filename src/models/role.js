@@ -18,13 +18,7 @@ const roleSchema = new Schema({
         required: true,
         unique: true, // ป้องกันการซ้ำซ้อนของชื่อ role
     },
-    roleMember: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Profile', default: [] }], // เก็บว่ามีใครอยู่ในนี้บ้าง
-    defaultPermissions: {
-        type: [String],
-        enum: ['Create', 'Read', 'Update', 'Delete'], // กำหนดค่าที่อนุญาต
-        default: ['Read'], // ค่า default เช่น ['Read'] หรือ ['Create', 'Read', 'Update', 'Delete'] ตามต้องการ
-    },
-
+    isProfiles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Profile', default: [] }], // เก็บว่ามีใครอยู่ในนี้บ้าง
     createdAt: {
         type: Date,
         default: Date.now,

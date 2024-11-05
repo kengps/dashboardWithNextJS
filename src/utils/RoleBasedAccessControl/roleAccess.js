@@ -1,5 +1,19 @@
 const roleAccessMap = {
-    "admin": [
+    "Master": [
+        "/",
+        "/auth/login",
+        "/dashboard",
+        "/dashboard/setting",
+        "/home",
+        // "/companies/[id]",
+        // "/tickets",
+        // "/tickets/[id]",
+        // "/team",
+        // "/payments",
+        // "/payments/[id]",
+        // "/analytics",
+    ],
+    "Admin": [
         "/",
         "/auth/login",
         "/dashboard",
@@ -37,7 +51,7 @@ const roleAccessMap = {
         "/company",
         "/support",
     ],
-    "member": [
+    "Member": [
         "/",
         "/projects",
         "/account",

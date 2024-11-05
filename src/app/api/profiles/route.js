@@ -13,6 +13,8 @@ const register = async (req) => {
     try {
         const values = await req.json();
         const { username, password, role, parentId, permissions } = values;
+        console.log(`⩇⩇:⩇⩇🚨  file: route.js:16  permissions :`, permissions);
+
 
         // ตรวจสอบว่ามี user หรือไม่            
         const existingUser = await profiles.findOne({ username });
@@ -28,13 +30,21 @@ const register = async (req) => {
             roleData = new roleModel({
                 name: role,
                 roleMember: [],
-                defaultPermissions: ['Create', 'Read', 'Update', 'Delete']
+                // defaultPermissions: ['Create', 'Read', 'Update', 'Delete']
+                // defaultPermissions: {
+                //     create: false,
+                //     read: true,
+                //     update: false,
+                //     delete: false,
+                // }
             });
             await roleData.save();
         }
 
         const hashedPassword = await generateHashPassword(password);
-        const userPermissions = permissions || roleData.defaultPermissions;
+        // const userPermissions = permissions || roleData.defaultPermissions;
+        // console.log(`⩇⩇:⩇⩇🚨  file: route.js:44  userPermissions :`, userPermissions);
+
 
         // สร้างผู้ใช้ใหม่
         const newUser = new profiles({
@@ -42,7 +52,12 @@ const register = async (req) => {
             password: hashedPassword,
             role: roleData._id,
             parentRoleId: parentId || null,
-            permissions: userPermissions,
+            permissions: {
+                create: permissions.create,
+                read: permissions.read,
+                update: permissions.update,
+                delete: permissions.delete,
+            },
         });
 
         await newUser.save();
@@ -50,7 +65,7 @@ const register = async (req) => {
         // อัปเดต role เพื่อเพิ่ม user ID ใหม่เข้าไปในฟิลด์ roleMember
         const updatedRole = await roleModel.findByIdAndUpdate(
             roleData._id,
-            { $push: { roleMember: newUser._id } },
+            { $push: { isProfiles: newUser._id } },
             { new: true }
         );
 
@@ -74,7 +89,7 @@ const getProfilesAll = async (req) => {
             profiles.find(),
             roleModel.find()
         ])
-        return NextResponse.json({ message: 'getProfilesAll', admins, members, profile, role})
+        return NextResponse.json({ message: 'getProfilesAll', admins, members, profile, role })
 
     } catch (error) {
 

@@ -17,17 +17,27 @@ const profilesSchema = new Schema({
         ref: 'Role',
         required: true,
     },
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
     parentRoleId: {
         type: Schema.Types.ObjectId,
         ref: 'Profile', // อ้างอิงไปยังผู้ใช้งานที่สร้าง user นี้
         default: null, // สำหรับกรณี user ระดับสูงสุด (เช่น Dev) ที่ไม่มี parent
     },
-    childrenRoles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Role', default: null, }],
-    subUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // ฟิลด์สำหรับเก็บผู้ใช้ลูก
+    childrenUser: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Profile', default: null, }],
+    //subUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }], // ฟิลด์สำหรับเก็บผู้ใช้ลูก
+    // permissions: {
+    //     type: [String],
+    //     enum: ['Create', 'Read', 'Update', 'Delete'], // ค่าการอนุญาต
+    //     default: null, // ถ้า null จะใช้ permissions จาก RoleDev
+    // },
     permissions: {
-        type: [String],
-        enum: ['Create', 'Read', 'Update', 'Delete'], // ค่าการอนุญาต
-        default: null, // ถ้า null จะใช้ permissions จาก RoleDev
+        create: { type: Boolean, default: null },
+        read: { type: Boolean, default: true },
+        update: { type: Boolean, default: null },
+        delete: { type: Boolean, default: null },
     },
 }, { timestamps: true });
 

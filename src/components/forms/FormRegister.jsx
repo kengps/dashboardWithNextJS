@@ -9,28 +9,8 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import MenuItem from '@mui/material/MenuItem';
 import { Controller } from 'react-hook-form';
-const FormRegister = ({ onFinishFailed, onFinish, handleSubmit, errors, register, passwordsMatch, currencies, data, role, control }) => {
+const FormRegister = ({ onFinishFailed, onFinish, handleSubmit, errors, register, passwordsMatch, currencies, data, role, control, loadings }) => {
 
-
-
-    // const [state, setState] = React.useState({
-    //     Create: false,
-    //     Read: false,
-    //     Update: false,
-    //     Delete: false,
-    // });
-
-
-    // const handleChange = (event) => {
-    //     setState({
-    //         ...state,
-    //         [event.target.name]: event.target.checked,
-    //     });
-    // };
-    // console.log(`⩇⩇:⩇⩇🚨  file: FormRegister.jsx:20  state :`, state);
-
-    // const { Create, Read, Update, Delete } = state;
-    // const error = [Create, Read, Update, Delete].filter((v) => v).length !== 2;
 
 
 
@@ -133,7 +113,7 @@ const FormRegister = ({ onFinishFailed, onFinish, handleSubmit, errors, register
                 > <MenuItem value="">
                         --Please choose--
                     </MenuItem>
-                    {role.map((role, index) => (
+                    {role.sort().map((role, index) => (
                         <MenuItem key={index} value={role}>
                             {role}
                         </MenuItem>
@@ -191,7 +171,7 @@ const FormRegister = ({ onFinishFailed, onFinish, handleSubmit, errors, register
 
 
 
-                    <Button type="primary" htmlType="submit" >
+                    <Button type="primary" htmlType="submit" disabled={loadings}>
                         Submit
                     </Button>
 
